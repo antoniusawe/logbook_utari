@@ -27,9 +27,9 @@ if st.session_state['uploaded_files']:
         st.write(f"{i}. {file.name}")
 
 # Confirmation radio button to check if the user is done
-confirmation = st.radio("Apakah sudah selesai upload?", ("No", "Yes"))
+confirmation = st.radio("Apakah sudah selesai upload?", ("Belum", "Sudah"))
 
-if confirmation == "Yes":
+if confirmation == "Sudah":
     st.success("Anda sudah selesai melakukan upload semua file logbook.")
     
     # Display a "Process" button after confirmation
@@ -100,4 +100,4 @@ if confirmation == "Yes":
         else:
             st.write("No valid files were processed.")
 else:
-    st.info("Please continue uploading files.")
+    st.info("Silahkan upload file logbook.")
