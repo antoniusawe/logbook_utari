@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Title of the app
-st.title("Upload Multiple Files")
+st.title("Upload File Logbook")
 
 # Initialize session state for storing uploaded files
 if 'uploaded_files' not in st.session_state:
@@ -18,7 +18,7 @@ if uploaded_files:
             st.session_state['uploaded_files'].append(uploaded_file)
 
 # Display the total number of uploaded files
-st.write(f"Total files uploaded: {len(st.session_state['uploaded_files'])}")
+st.write(f"Total file yang diupload: {len(st.session_state['uploaded_files'])}")
 
 # Display each uploaded file for confirmation
 if st.session_state['uploaded_files']:
