@@ -2,18 +2,20 @@ import streamlit as st
 import pandas as pd
 
 # Title of the app
-st.title("Upload Multiple Files")
+st.title("Upload file logbook")
 
 # Initialize session state for storing uploaded files
 if 'uploaded_files' not in st.session_state:
     st.session_state['uploaded_files'] = []
 
-# File uploader for uploading files one by one
-uploaded_file = st.file_uploader("Upload a file", type=["xlsx", "csv"])
+# File uploader for uploading multiple files at once
+uploaded_files = st.file_uploader("Upload files", type=["xlsx", "csv"], accept_multiple_files=True)
 
-# Add the uploaded file to the session state if it's not already added
-if uploaded_file is not None and uploaded_file not in st.session_state['uploaded_files']:
-    st.session_state['uploaded_files'].append(uploaded_file)
+# Add the uploaded files to the session state if they are not already added
+if uploaded_files:
+    for uploaded_file in uploaded_files:
+        if uploaded_file not in st.session_state['uploaded_files']:
+            st.session_state['uploaded_files'].append(uploaded_file)
 
 # Display the total number of uploaded files
 st.write(f"Total files uploaded: {len(st.session_state['uploaded_files'])}")
@@ -62,6 +64,12 @@ if confirmation == "Yes":
                 # Remove empty rows
                 df = df.dropna(axis=0, how='all')
 
+                # Convert relevant columns to numeric (if they exist) for summing later
+                columns_to_convert = ['Count', 'SUM Input From SRS', 'SUM Input From Confins']
+                for col in columns_to_convert:
+                    if col in df.columns:
+                        df[col] = pd.to_numeric(df[col], errors='coerce')
+
                 processed_dfs.append(df)  # Store the processed DataFrame
                 st.write(f"File {index} processed successfully!")
 
@@ -73,6 +81,16 @@ if confirmation == "Yes":
             concatenated_df = pd.concat(processed_dfs, ignore_index=True)
             st.write("Displaying concatenated data:")
             st.dataframe(concatenated_df)
+
+            # Calculate and display the sum of the relevant columns
+            total_count = concatenated_df['Count'].sum() if 'Count' in concatenated_df.columns else 0
+            total_sum_srs = concatenated_df['SUM Input From SRS'].sum() if 'SUM Input From SRS' in concatenated_df.columns else 0
+            total_sum_confins = concatenated_df['SUM Input From Confins'].sum() if 'SUM Input From Confins' in concatenated_df.columns else 0
+
+            st.write("### Totals:")
+            st.write(f"Total Count: {total_count}")
+            st.write(f"Total SUM Input From SRS: {total_sum_srs}")
+            st.write(f"Total SUM Input From Confins: {total_sum_confins}")
         else:
             st.write("No valid files were processed.")
 else:
