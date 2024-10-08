@@ -64,11 +64,11 @@ if confirmation == "Yes":
                 # Remove empty rows
                 df = df.dropna(axis=0, how='all')
 
-                # Convert relevant columns to numeric (if they exist) for summing later
+                # Clean and convert relevant columns to numeric (if they exist) for summing later
                 columns_to_convert = ['Count', 'SUM Input From SRS', 'SUM Input From Confins']
                 for col in columns_to_convert:
                     if col in df.columns:
-                        df[col] = pd.to_numeric(df[col], errors='coerce')
+                        df[col] = pd.to_numeric(df[col].replace(',', '').replace(' ', ''), errors='coerce')
 
                 processed_dfs.append(df)  # Store the processed DataFrame
                 st.write(f"File {index} processed successfully!")
