@@ -51,6 +51,15 @@ if confirmation == "Yes":
                 df.columns = df.iloc[header_row_index]
                 df = df[header_row_index + 1:].reset_index(drop=True)
 
+                # Remove empty columns
+                df = df.dropna(axis=1, how='all')
+
+                # Remove empty rows
+                df = df.dropna(axis=0, how='all')
+
+                # Remove columns with duplicate names
+                df = df.loc[:, ~df.columns.duplicated()]
+
                 processed_dfs.append(df)  # Store the processed DataFrame
                 st.write(f"File {index} processed successfully!")
 
