@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 
+# Install openpyxl if not already installed
+!pip install openpyxl
+
 # Title of the app
 st.title("Upload File 1")
 
@@ -12,7 +15,7 @@ if uploaded_file is not None:
     # Read the file based on its type
     try:
         if uploaded_file.name.endswith('.xlsx'):
-            df = pd.read_excel(uploaded_file)
+            df = pd.read_excel(uploaded_file, engine='openpyxl')
         elif uploaded_file.name.endswith('.csv'):
             df = pd.read_csv(uploaded_file)
 
