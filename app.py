@@ -33,6 +33,8 @@ if confirmation == "Yes":
     # Display a "Process" button after confirmation
     if st.button("Process"):
         st.write("Processing files...")
+        processed_dfs = []  # List to store processed DataFrames
+
         # Process each uploaded file
         for index, file in enumerate(st.session_state['uploaded_files'], start=1):
             try:
@@ -49,9 +51,17 @@ if confirmation == "Yes":
                 df.columns = df.iloc[header_row_index]
                 df = df[header_row_index + 1:].reset_index(drop=True)
 
+                processed_dfs.append(df)  # Store the processed DataFrame
                 st.write(f"File {index} processed successfully!")
-                st.write("Headers set based on the row containing 'No'.")
+
             except Exception as e:
                 st.write(f"Error with file {index}: {e}")
+        
+        # Display the processed DataFrames if there are any
+        if processed_dfs:
+            st.write("Displaying processed data:")
+            for idx, processed_df in enumerate(processed_dfs, start=1):
+                st.write(f"Data from File {idx}:")
+                st.dataframe(processed_df)
 else:
     st.info("Please continue uploading files.")
