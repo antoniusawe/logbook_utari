@@ -80,7 +80,12 @@ if confirmation == "Yes":
         # Concatenate the processed DataFrames if there are any
         if processed_dfs:
             concatenated_df = pd.concat(processed_dfs, ignore_index=True)
-            st.write("Displaying concatenated data:")
+
+            # Remove the 'No' column if it exists
+            if 'No' in concatenated_df.columns:
+                concatenated_df = concatenated_df.drop(columns=['No'])
+
+            st.write("Displaying concatenated data without 'No' column:")
             st.dataframe(concatenated_df)
 
             # Calculate and display the sum of the relevant columns
