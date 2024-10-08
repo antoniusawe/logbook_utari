@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-# Install openpyxl if not already installed
-!pip install openpyxl
 
 # Title of the app
 st.title("Upload File 1")
