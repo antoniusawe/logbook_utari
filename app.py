@@ -42,8 +42,8 @@ if confirmation == "Yes":
                 elif file.name.endswith('.csv'):
                     df = pd.read_csv(file, header=None)
 
-                # Find the header row
-                header_row_index = df[df.apply(lambda row: row.str.contains('No', case=False, na=False)).any(axis=1)].index[0]
+                # Find the header row containing 'No'
+                header_row_index = df.apply(lambda row: row.astype(str).str.contains('No', case=False, na=False)).any(axis=1).idxmax()
 
                 # Set the row as header and re-read the data with correct header
                 df.columns = df.iloc[header_row_index]
