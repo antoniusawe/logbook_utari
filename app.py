@@ -29,17 +29,29 @@ confirmation = st.radio("Have you finished uploading files?", ("No", "Yes"))
 
 if confirmation == "Yes":
     st.success("You have indicated that you have finished uploading files.")
-    # Process each uploaded file
-    for index, file in enumerate(st.session_state['uploaded_files'], start=1):
-        try:
-            if file.name.endswith('.xlsx'):
-                df = pd.read_excel(file, engine='openpyxl')
-            elif file.name.endswith('.csv'):
-                df = pd.read_csv(file)
+    
+    # Display a "Process" button after confirmation
+    if st.button("Process"):
+        st.write("Processing files...")
+        # Process each uploaded file
+        for index, file in enumerate(st.session_state['uploaded_files'], start=1):
+            try:
+                # Read the file
+                if file.name.endswith('.xlsx'):
+                    df = pd.read_excel(file, engine='openpyxl', header=None)
+                elif file.name.endswith('.csv'):
+                    df = pd.read_csv(file, header=None)
 
-            st.write(f"File {index} uploaded successfully!")
-            st.dataframe(df)
-        except Exception as e:
-            st.write(f"Error with file {index}: {e}")
+                # Find the header row
+                header_row_index = df[df.apply(lambda row: row.str.contains('No', case=False, na=False)).any(axis=1)].index[0]
+
+                # Set the row as header and re-read the data with correct header
+                df.columns = df.iloc[header_row_index]
+                df = df[header_row_index + 1:].reset_index(drop=True)
+
+                st.write(f"File {index} processed successfully!")
+                st.write("Headers set based on the row containing 'No'.")
+            except Exception as e:
+                st.write(f"Error with file {index}: {e}")
 else:
     st.info("Please continue uploading files.")
