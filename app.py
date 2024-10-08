@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Title of the app
-st.title("Upload file logbook")
+st.title("Upload Multiple Files")
 
 # Initialize session state for storing uploaded files
 if 'uploaded_files' not in st.session_state:
@@ -50,9 +50,9 @@ if confirmation == "Yes":
                 # Find the header row containing 'No'
                 header_row_index = df.apply(lambda row: row.astype(str).str.contains('No', case=False, na=False)).any(axis=1).idxmax()
 
-                # Set the row as header
+                # Set the row as header and clean the column names
                 if common_header is None:
-                    common_header = df.iloc[header_row_index]  # Use this as the common header
+                    common_header = df.iloc[header_row_index].str.strip()  # Clean the header by stripping whitespace
 
                 # Set the DataFrame columns and remove rows above the header
                 df.columns = common_header
@@ -68,7 +68,8 @@ if confirmation == "Yes":
                 columns_to_convert = ['Count', 'SUM Input From SRS', 'SUM Input From Confins']
                 for col in columns_to_convert:
                     if col in df.columns:
-                        df[col] = pd.to_numeric(df[col].replace(',', '').replace(' ', ''), errors='coerce')
+                        # Remove any non-numeric characters (e.g., commas, spaces) and convert to numeric
+                        df[col] = pd.to_numeric(df[col].astype(str).replace('[^0-9.-]', '', regex=True), errors='coerce')
 
                 processed_dfs.append(df)  # Store the processed DataFrame
                 st.write(f"File {index} processed successfully!")
