@@ -27,14 +27,14 @@ if st.session_state['uploaded_files']:
         st.write(f"{i}. {file.name}")
 
 # Confirmation radio button to check if the user is done
-confirmation = st.radio("Have you finished uploading files?", ("No", "Yes"))
+confirmation = st.radio("Apakah sudah selesai upload?", ("No", "Yes"))
 
 if confirmation == "Yes":
-    st.success("You have indicated that you have finished uploading files.")
+    st.success("Anda sudah selesai melakukan upload semua file logbook.")
     
     # Display a "Process" button after confirmation
-    if st.button("Process"):
-        st.write("Processing files...")
+    if st.button("Proses"):
+        st.write("File diproses...")
         processed_dfs = []  # List to store processed DataFrames
         common_header = None  # Variable to store the header
 
