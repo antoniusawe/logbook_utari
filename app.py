@@ -34,6 +34,7 @@ if confirmation == "Yes":
     if st.button("Process"):
         st.write("Processing files...")
         processed_dfs = []  # List to store processed DataFrames
+        common_header = None  # Variable to store the header
 
         # Process each uploaded file
         for index, file in enumerate(st.session_state['uploaded_files'], start=1):
@@ -47,8 +48,12 @@ if confirmation == "Yes":
                 # Find the header row containing 'No'
                 header_row_index = df.apply(lambda row: row.astype(str).str.contains('No', case=False, na=False)).any(axis=1).idxmax()
 
-                # Set the row as header and re-read the data with correct header
-                df.columns = df.iloc[header_row_index]
+                # Set the row as header
+                if common_header is None:
+                    common_header = df.iloc[header_row_index]  # Use this as the common header
+
+                # Set the DataFrame columns and remove rows above the header
+                df.columns = common_header
                 df = df[header_row_index + 1:].reset_index(drop=True)
 
                 # Remove empty columns
@@ -57,20 +62,18 @@ if confirmation == "Yes":
                 # Remove empty rows
                 df = df.dropna(axis=0, how='all')
 
-                # Remove columns with duplicate names
-                df = df.loc[:, ~df.columns.duplicated()]
-
                 processed_dfs.append(df)  # Store the processed DataFrame
                 st.write(f"File {index} processed successfully!")
 
             except Exception as e:
                 st.write(f"Error with file {index}: {e}")
         
-        # Display the processed DataFrames if there are any
+        # Concatenate the processed DataFrames if there are any
         if processed_dfs:
-            st.write("Displaying processed data:")
-            for idx, processed_df in enumerate(processed_dfs, start=1):
-                st.write(f"Data from File {idx}:")
-                st.dataframe(processed_df)
+            concatenated_df = pd.concat(processed_dfs, ignore_index=True)
+            st.write("Displaying concatenated data:")
+            st.dataframe(concatenated_df)
+        else:
+            st.write("No valid files were processed.")
 else:
     st.info("Please continue uploading files.")
