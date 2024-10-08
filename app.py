@@ -85,7 +85,7 @@ if confirmation == "Sudah":
             if 'No' in concatenated_df.columns:
                 concatenated_df = concatenated_df.drop(columns=['No'])
 
-            st.write("Displaying concatenated data without 'No' column:")
+            st.write("Hasil penggabungan:")
             st.dataframe(concatenated_df)
 
             # Calculate and display the sum of the relevant columns
@@ -98,6 +98,6 @@ if confirmation == "Sudah":
             st.write(f"Total SUM Input From SRS: {total_sum_srs}")
             st.write(f"Total SUM Input From Confins: {total_sum_confins}")
         else:
-            st.write("No valid files were processed.")
+            st.write("Tidak ada file yang diproses.")
 else:
     st.info("Silahkan upload file logbook.")
